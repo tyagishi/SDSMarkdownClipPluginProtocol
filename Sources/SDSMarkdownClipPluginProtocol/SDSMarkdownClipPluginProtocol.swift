@@ -2,8 +2,25 @@
 // https://docs.swift.org/swift-book
 
 import Foundation
-import SDSMarkdownEditView
+//import SDSMarkdownEditView
 import SwiftUI
+import SDSMacros
+
+@IsCheckEnum
+@AssociatedValueEnum
+public enum ModifyText {
+    case insert(text: String, at: String.Index, newCursor: String.Index?)
+    case replace(text: String, at: Range<String.Index>, newCursor: String.Index?)
+    case remove(at: Range<String.Index>, newCursor: String.Index?)
+    
+    public var newCursor: String.Index? {
+        switch self {
+        case .insert(let text, let at, let newCursor):  return newCursor
+        case .replace(let text, let at, let newCursor): return newCursor
+        case .remove(let at, let newCursor):            return newCursor
+        }
+    }
+}
 
 public protocol MarkdownClipGeneralProtocol {
     init()
@@ -11,14 +28,11 @@ public protocol MarkdownClipGeneralProtocol {
 }
 
 public protocol MarkdownClipTextPlugin: MarkdownClipGeneralProtocol {
-    func editText(text: String, at: String.Index) -> (newText: String, replace: Range<String.Index>, cursorAt: String.Index?)
+    func modifyText(text: String, at: String.Index)  -> ModifyText?
 }
 
 public protocol MarkdownClipGUIPlugin: MarkdownClipGeneralProtocol {
-    var textViewModel: MarkdownTextViewModel? { get set }
-
     @MainActor
-    @ViewBuilder
     func sheet() -> AnyView
 }
 
