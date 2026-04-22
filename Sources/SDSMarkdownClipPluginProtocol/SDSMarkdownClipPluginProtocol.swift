@@ -15,9 +15,9 @@ public enum ModifyText {
     
     public var newCursor: String.Index? {
         switch self {
-        case .insert(let text, let at, let newCursor):  return newCursor
-        case .replace(let text, let at, let newCursor): return newCursor
-        case .remove(let at, let newCursor):            return newCursor
+        case .insert(_,_,let newCursor):   return newCursor
+        case .replace(_,_, let newCursor): return newCursor
+        case .remove(_, let newCursor):    return newCursor
         }
     }
 }
